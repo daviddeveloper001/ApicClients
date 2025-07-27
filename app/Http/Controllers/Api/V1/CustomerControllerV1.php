@@ -30,9 +30,10 @@ class CustomerControllerV1 extends ApiControllerV1
     public function store(StoreCustomerRequestV1 $request)
     {
         try {
-            $dto = CustomerDTOV1::fromRequest($request->validated()
-);
-$customer = $this->customerService->createCustomer($dto);
+            $dto = CustomerDTOV1::fromRequest(
+                $request->validated()
+            );
+            $customer = $this->customerService->createCustomer($dto);
             return $this->ok('Customer created successfully', new CustomerResourceV1($customer));
         } catch (\Throwable $e) {
             return $this->handleException($e);
@@ -51,9 +52,10 @@ $customer = $this->customerService->createCustomer($dto);
     public function update(UpdateCustomerRequestV1 $request, Customer $customer)
     {
         try {
-            $dto = CustomerDTOV1::fromRequest($request->validated()
-);
-$customer = $this->customerService->updateCustomer($customer, $dto);
+            $dto = CustomerDTOV1::fromRequest(
+                $request->validated()
+            );
+            $customer = $this->customerService->updateCustomer($customer, $dto);
             return $this->ok('Customer updated successfully', new CustomerResourceV1($customer));
         } catch (\Throwable $e) {
             return $this->handleException($e);
