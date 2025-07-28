@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\DTOs\V1\CustomerDTOV1;
 use App\Filters\CustomerFilter;
+use Illuminate\Http\JsonResponse;
 use App\Services\Api\V1\CustomerServiceV1;
 use App\Http\Controllers\Api\V1\ApiControllerV1;
 use App\Http\Resources\Api\V1\Customer\CustomerResourceV1;
@@ -16,7 +18,7 @@ class CustomerControllerV1 extends ApiControllerV1
 {
     public function __construct(private CustomerServiceV1 $customerService) {}
 
-    public function index(CustomerFilter $filters)
+    /* public function index(CustomerFilter $filters)
     {
         try {
             $perPage = request()->input('per_page', 10);
@@ -26,7 +28,26 @@ class CustomerControllerV1 extends ApiControllerV1
         } catch (\Throwable $e) {
             return $this->handleException($e);
         }
-    }
+    } */
+
+    /* public function index(StoreCustomerRequestV1 $request): JsonResponse
+    {
+        $documentNumber = $request->validated()['document_number'];
+        $token = $request->bearerToken();
+
+        $customer = $this->customerService->findByCedulaWithAuth($documentNumber, $token, $request->ip());
+
+        if (! $customer) {
+            return response()->json([
+                'message' => 'Cliente no encontrado o no autorizado'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return response()->json([
+            'message' => 'Cliente encontrado',
+            'data' => $customer,
+        ], Response::HTTP_OK);
+    } */
 
 
     public function showByDocument(Request $request, $document)

@@ -71,15 +71,14 @@ class CustomerServiceV1
     }
 
 
-    public function findByToken(string $rawToken): ?ApiClient
+    public function findByCedulaWithAuth(string $documentNumber, string $token, string $ip): ?Customer
     {
-        return ApiClient::where('token', hash('sha256', $rawToken))
-                        ->where('active', true)
-                        ->first();
-    }
+        $client = app(ApiClientServiceV1::class)->validateToken($token, $ip);
 
-    public function updateLastConnection(ApiClient $client): void
-    {
-        $client->updateQuietly(['last_connected_at' => Carbon::now()]);
+        if (!$client || !in_array('read_customers', $client->permissions ?? [])) {
+            return null;
+        }
+
+        return Customer::where('document_number', $documentNumber)->first();
     }
 }

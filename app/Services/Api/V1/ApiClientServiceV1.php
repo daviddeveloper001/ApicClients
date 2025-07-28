@@ -3,14 +3,35 @@
 namespace App\Services\Api\V1;
 
 use App\Models\ApiClient;
-use App\Exceptions\ApiClientException;
-use App\Repositories\V1\ApiClientRepositoryV1;
 use Illuminate\Http\Response;
 use App\DTOs\V1\ApiClientDTOV1;
+use Illuminate\Support\Facades\Hash;
+use App\Exceptions\ApiClientException;
+use App\Repositories\V1\ApiClientRepositoryV1;
 
 class ApiClientServiceV1
 {
-    public function __construct(private ApiClientRepositoryV1 $apiClientRepository) {}
+    //public function __construct(private ApiClientRepositoryV1 $apiClientRepository) {}
+
+    public function __construct(protected ApiClientRepositoryV1 $apiClientRepository)
+    {
+    }
+
+    public function validateToken(string $plaintextToken, string $ip): ?object
+    {
+        $clients = $this->apiClientRepository->getActiveClients();
+
+        foreach ($clients as $client) {
+            if (
+                Hash::check($plaintextToken, $client->token) &&
+                (empty($client->ip_whitelist) || in_array($ip, $client->ip_whitelist))
+            ) {
+                return $client;
+            }
+        }
+
+        return null;
+    }
 
     public function getAllApiClients($filters, $perPage)
     {

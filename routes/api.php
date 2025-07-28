@@ -11,3 +11,7 @@ use App\Http\Controllers\Api\V1\CustomerControllerV1;
 Route::middleware(CheckApiClientToken::class)->group(function () {
     Route::get('customers/document/{document}', [CustomerControllerV1::class, 'showByDocument']);
 });
+
+/* Route::middleware(CheckApiClientToken::class)->group(function () {
+    Route::get('customers', [CustomerControllerV1::class, 'index']);
+}); */

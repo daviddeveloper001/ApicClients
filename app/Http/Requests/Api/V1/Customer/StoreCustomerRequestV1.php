@@ -22,7 +22,7 @@ class StoreCustomerRequestV1 extends FormRequest
     public function rules(): array
     {
         return [
-            
+            'document_number' => 'required|string|max:20',
         ];
     }
 }
