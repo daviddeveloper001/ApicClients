@@ -2,11 +2,13 @@
 
 namespace App\Services\Api\V1;
 
+use Carbon\Carbon;
 use App\Models\Customer;
-use App\Exceptions\CustomerException;
-use App\Repositories\V1\CustomerRepositoryV1;
+use App\Models\ApiClient;
 use Illuminate\Http\Response;
 use App\DTOs\V1\CustomerDTOV1;
+use App\Exceptions\CustomerException;
+use App\Repositories\V1\CustomerRepositoryV1;
 
 class CustomerServiceV1
 {
@@ -66,5 +68,18 @@ class CustomerServiceV1
                 previous: $e
             );
         }
+    }
+
+
+    public function findByToken(string $rawToken): ?ApiClient
+    {
+        return ApiClient::where('token', hash('sha256', $rawToken))
+                        ->where('active', true)
+                        ->first();
+    }
+
+    public function updateLastConnection(ApiClient $client): void
+    {
+        $client->updateQuietly(['last_connected_at' => Carbon::now()]);
     }
 }

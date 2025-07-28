@@ -14,7 +14,7 @@ class CustomerSeeder extends Seeder
      */
     public function run(): void
     {
-        Customer::create([
+        Customer::updateOrCreate([
             'name' => 'John Doe',
             'document_number' => '123456789',
         ]);

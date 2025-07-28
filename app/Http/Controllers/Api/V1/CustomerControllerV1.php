@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Customer;
+use Illuminate\Http\Request;
+use App\DTOs\V1\CustomerDTOV1;
 use App\Filters\CustomerFilter;
 use App\Services\Api\V1\CustomerServiceV1;
 use App\Http\Controllers\Api\V1\ApiControllerV1;
 use App\Http\Resources\Api\V1\Customer\CustomerResourceV1;
 use App\Http\Requests\Api\V1\Customer\StoreCustomerRequestV1;
 use App\Http\Requests\Api\V1\Customer\UpdateCustomerRequestV1;
-use App\DTOs\V1\CustomerDTOV1;
 
 class CustomerControllerV1 extends ApiControllerV1
 {
@@ -26,6 +27,25 @@ class CustomerControllerV1 extends ApiControllerV1
             return $this->handleException($e);
         }
     }
+
+
+    public function showByDocument(Request $request, $document)
+    {
+        $client = $request->get('api_client');
+
+        if (!in_array('read_customers', $client->permissions ?? [])) {
+            return response()->json(['message' => 'No tienes permisos'], 403);
+        }
+
+        $customer = Customer::where('document_number', $document)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'No encontrado'], 404);
+        }
+
+        return response()->json($customer);
+    }
+
 
     public function store(StoreCustomerRequestV1 $request)
     {
